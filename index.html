@@ -155,6 +155,24 @@ a {
   
 </style>
 
+<style>
+  @font-face {
+    font-family: 'Factoria Bold';
+    src: fonts/FactoriaTest-Bold-BF65c2f4a903389.otf;
+    font-weight: bold;
+    font-style: normal;
+  }
+  .custom-text {
+    font-family: 'Factoria Bold', sans-serif;
+    color: #FFFFFF; /* White text for contrast */
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px; /* Adjust size as needed */
+  }
+</style>
+ 
+ 
 <body bgcolor= #313e49>
  
 <body>
@@ -170,13 +188,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="container">
     <div class="card">
       <img class="marginauto" src="images/The-Charles-Logo.png" alt="Logo" style="max-width: 300px"> 
-      <h2 style="text-align: center;" markdown="1"><b style="color:#cea155;"><p style="font-family:Source Sans Pro Black"> REDMOND LIFE FROM A NEW PERSPECTIVE</p></h2></b>
-      <h2 style="text-align: center;" markdown="1"><b style="color:#cea155;"><p style="font-family:Source Sans Pro"> Studio, 1, 2, 3 Bedrooms & Town Home Options</p></h2></b>
+      <h2 style="text-align: center;" markdown="1"><b style="color:#cea155;"><p style="font-family:fonts/FactoriaTest-Bold-BF65c2f4a903389.otf"> REDMOND LIFE FROM A NEW PERSPECTIVE</p></h2></b>
+      <h2 style="text-align: center;" markdown="1"><b style="color:#cea155;"><p style="font-family:fonts/FactoriaTest-Bold"> Studio, 1, 2, 3 Bedrooms & Town Home Options</p></h2></b>
       <h1 style="text-align: center;" markdown="1"><b style="color:#b5aa33;"><p style="font-family:Source Sans Pro Black"> NOW PRELEASING!</p></h1></b>
      <!--<h3 style="text-align: center;" markdown="1"><b style="color:#b5aa33;"><p style="font-family:Avenir Next LT Pro"> <em>LIMITLESS</em> ACCESS, CENTERED IN <em>POSSIBILITIES</em>, <em>TRANQUIL</em> LIVING.</p></h3></b> -->
     </div> 
- 
- <div class="card"> 
+
+<div class="card"> 
       <model-viewer loading="eager" src="Models/the_charles_floorplan_final_v12.glb?sound=Sound/Charles_FP_Audio.mp3" camera-controls 
                    camera-orbit="180deg 23deg 75%" autoplay animation-name="" id="interaction" id="reveal" exposure="1" shadow-intensity="1" ar ar-modes="scene-viewer webxr quick-look" ios-src="Models/THE_CHARLES_FLOORPLAN_FINAL_v12C.usdz"
                    alt="Alexan Main Street" auto-rotate-delay="0" ar-scale="auto"
