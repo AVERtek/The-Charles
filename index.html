@@ -96,7 +96,7 @@ var promise = sound.play();
         var sound = document.querySelector("#sound");
         sound.currentTime = time;
       }
-   </script>
+</script>
  
 <script>
 /**
@@ -114,7 +114,12 @@ var getOutboundLink = function(url) {
   });
 }
 </script>
-<style> 
+ 
+<script>
+ document.querySelector('.custom-text').textContent = 'Updated Text!';
+</script>
+ 
+ <style> 
  
 .container {
  column-count: 1;
@@ -172,6 +177,18 @@ a {
   }
 </style>
 
+<style>
+  @media (max-width: 768px) {
+    .custom-text {
+      font-size: 18px; /* Adjust font size for smaller screens */
+      top: 10px; /* Adjust positioning */
+      left: 10px;
+    }
+    model-viewer {
+      height: 300px; /* Adjust model size for mobile */
+    }
+  }
+</style>
  
 <body bgcolor= #313e49>
  
