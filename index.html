@@ -50,36 +50,25 @@
             color: #2F2F2E; padding: 12px 15px; cursor: pointer; 
             font-weight: bold; font-family: 'Factoria Bold', sans-serif;
             font-size: clamp(14px, 4vw, 18px);
-            transition: transform 0.1s ease;
         }
-        .ar-button:active { transform: scale(0.98); }
 
         #video-overlay {
             width: 100%; height: auto; border-radius: 8px;
             display: block; background: #000;
         }
 
-        /* Responsive Error Banner */
         #ar-error {
-            display: none;
-            background-color: #ff595a;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 15px;
-            font-family: 'Factoria Bold', sans-serif;
-            border: 1px solid white;
-            cursor: pointer; /* Indicates it can be clicked to close */
+            display: none; background-color: #ff595a; color: white;
+            padding: 15px; border-radius: 8px; text-align: center;
+            margin-bottom: 15px; border: 1px solid white; cursor: pointer;
             animation: fadeIn 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* Hidden model-viewer strictly for AR launch */
         model-viewer { width: 0; height: 0; visibility: hidden; position: absolute; }
+        
         .marginauto { margin: 10px auto; display: block; }
         .centerImage { text-align: center; display: block; }
         a { color: #cea155; text-decoration: none; }
@@ -97,7 +86,7 @@
             <h1 style="color:#b5aa33;">NOW LEASING!</h1>
         </div>
 
-        <div id="ar-error" onclick="toggleError(false)">
+        <div id="ar-error" onclick="this.style.display='none'">
             ⚠️ AR is not supported on this device. <br>
             Please open this page on a mobile phone to walk the floorplan. <br>
             <small>(Click to dismiss)</small>
@@ -117,8 +106,15 @@
             <model-viewer id="sync-model" 
                 src="Models/the_charles_floorplan_final_v12.glb" 
                 ios-src="Models/THE_CHARLES_FLOORPLAN_FINAL_v12C.usdz#allowsScaling=1"
-                ar ar-modes="webxr quick-look scene-viewer" ar-scale="any"
-                camera-controls interaction-prompt="none">
+                ar 
+                ar-modes="webxr quick-look scene-viewer" 
+                ar-scale="any"
+                ar-placement="floor"
+                autoplay
+                camera-controls 
+                interaction-prompt="none"
+                exposure="1" 
+                shadow-intensity="1">
             </model-viewer>
         </div>
 
@@ -160,23 +156,22 @@
         const arButton = document.querySelector("#ar-launcher");
         const arError = document.querySelector("#ar-error");
 
-        function toggleError(show) {
-            arError.style.display = show ? 'block' : 'none';
-        }
-
+        // Force Animation & Scaling Logic
         arButton.addEventListener('click', () => {
-            // Check if model-viewer thinks AR is possible
             if (modelViewer.canActivateAR) {
-                toggleError(false);
+                arError.style.display = 'none';
                 modelViewer.activateAR();
             } else {
-                // Toggle logic: If error is already showing, hide it. If not, show it.
                 const isShowing = arError.style.display === 'block';
-                toggleError(!isShowing);
-                
-                if (!isShowing) {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+                arError.style.display = isShowing ? 'none' : 'block';
+                if (!isShowing) window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Event listener to re-trigger play() when user places the object in AR
+        modelViewer.addEventListener('ar-status', (event) => {
+            if (event.detail.status === 'object-placed') {
+                modelViewer.play();
             }
         });
 
