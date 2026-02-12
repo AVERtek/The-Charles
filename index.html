@@ -103,6 +103,10 @@
                 <source src="Video/SCOUT HIGH RES_25F.mp4" type="video/mp4">
             </video>
 
+            <audio id="ar-sound" loop>
+                <source src="Sound/Charles_FP_Audio.mp3" type="audio/mpeg">
+            </audio>
+
             <model-viewer id="sync-model" 
                 src="Models/the_charles_floorplan_final_v12.glb" 
                 ios-src="Models/THE_CHARLES_FLOORPLAN_FINAL_v12C.usdz#allowsScaling=1"
@@ -110,7 +114,6 @@
                 ar-modes="webxr quick-look scene-viewer" 
                 ar-scale="any"
                 ar-placement="floor"
-                autoplay
                 camera-controls 
                 interaction-prompt="none"
                 exposure="1" 
@@ -155,11 +158,18 @@
         const modelViewer = document.querySelector("#sync-model");
         const arButton = document.querySelector("#ar-launcher");
         const arError = document.querySelector("#ar-error");
+        const arSound = document.querySelector("#ar-sound");
 
         // Force Animation & Scaling Logic
         arButton.addEventListener('click', () => {
             if (modelViewer.canActivateAR) {
                 arError.style.display = 'none';
+                // Pre-play/pause the sound to bypass browser audio locks
+                arSound.play().then(() => {
+                    arSound.pause();
+                    arSound.currentTime = 0;
+                }).catch(e => console.log("Audio prep ignored: ", e));
+                
                 modelViewer.activateAR();
             } else {
                 const isShowing = arError.style.display === 'block';
@@ -168,10 +178,18 @@
             }
         });
 
-        // Event listener to re-trigger play() when user places the object in AR
+        // Event listener to trigger audio and animation when placed in AR
         modelViewer.addEventListener('ar-status', (event) => {
             if (event.detail.status === 'object-placed') {
                 modelViewer.play();
+                arSound.play();
+            }
+        });
+
+        // Stop audio if user exits AR or minimizes the browser
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState !== "visible") {
+                arSound.pause();
             }
         });
 
