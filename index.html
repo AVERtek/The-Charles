@@ -32,28 +32,50 @@
 
         body { background-color: #313e49; margin: 0; padding: 15px; font-family: 'Factoria Bold', sans-serif; }
         .container { column-count: 1; max-width: 800px; margin: 0 auto; }
-        .card { background-color: #313e49; border: 2px solid #313e49; padding: 10px; margin-bottom: 1em; position: relative; }
-        .card-white { background-color: #FFFFFF; border-radius: 8px; padding: 5px; margin-bottom: 1em; position: relative; }
+        .card { background-color: #313e49; padding: 10px; margin-bottom: 1em; position: relative; }
         
-        /* Overlay for Autoplay permissions */
-        #overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); z-index: 10;
-            display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 8px;
+        /* The Experience Container */
+        .experience-wrapper { 
+            position: relative; 
+            width: 100%; 
+            height: 600px; 
+            background-color: #FFFFFF; 
+            border-radius: 8px; 
+            overflow: hidden;
         }
-        #overlay.hide { display: none; }
-        .play-trigger { background: #b5aa33; color: #2F2F2E; border: 1px solid white; padding: 12px 24px; border-radius: 8px; font-weight: bold; }
 
+        /* The Video Overlay - Hides the 3D model until AR is clicked */
+        #video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            object-fit: cover;
+            background: white;
+        }
+
+        /* The AR Button - Must stay on top of video */
         .ar-button { 
-            background-color: #b5aa33; border-radius: 8px; border: 1px solid white; 
-            position: absolute; top: 10px; right: 10px; height: 40px; 
-            color: #2F2F2E; padding: 0 15px; cursor: pointer; z-index: 15; font-weight: bold;
+            background-color: #b5aa33; 
+            border-radius: 8px; 
+            border: 1px solid white; 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            height: 40px; 
+            color: #2F2F2E; 
+            padding: 0 15px; 
+            cursor: pointer; 
+            z-index: 10; 
+            font-weight: bold;
+            font-family: 'Factoria Bold', sans-serif;
         }
 
-        model-viewer { width: 100%; height: 600px; background-color: #FFFFFF; --poster-color: transparent; }
+        model-viewer { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
         .marginauto { margin: 10px auto; display: block; }
         .centerImage { text-align: center; display: block; }
-        
         a { color: #cea155; text-decoration: none; }
         h1, h2, h3 { font-family: 'Factoria Bold', sans-serif; margin: 10px 0; }
     </style>
@@ -66,14 +88,13 @@
         <div class="card">
             <img class="marginauto" src="images/The-Charles-Logo.png" alt="Logo" style="max-width: 300px"> 
             <h2 style="text-align: center; color:#cea155;">REDMOND LIFE FROM A NEW PERSPECTIVE</h2>
-            <h2 style="text-align: center; color:#cea155;">Studio, 1, 2, 3 Bedrooms & Town Home Options</h2>
             <h1 style="text-align: center; color:#b5aa33;">NOW LEASING!</h1>
         </div>
 
-        <div class="card-white">
-            <div id="overlay" onclick="startExperience()">
-                <div class="play-trigger">CLICK TO EXPLORE</div>
-            </div>
+        <div class="experience-wrapper">
+            <video id="video-overlay" playsinline autoplay muted loop poster="images/Scout.png">
+                <source src="Video/SCOUT HIGH RES_25F.mp4" type="video/mp4">
+            </video>
 
             <model-viewer id="sync-model" 
                 src="Models/the_charles_floorplan_final_v12.glb" 
@@ -83,7 +104,6 @@
                 ar-scale="any" 
                 camera-controls 
                 camera-orbit="180deg 23deg 75%"
-                autoplay
                 interaction-prompt="none"
                 exposure="1" 
                 shadow-intensity="1">
@@ -94,17 +114,7 @@
             </model-viewer>
         </div>
 
-        <audio id="sound">
-            <source src="Sound/Charles_FP_Audio.mp3" type="audio/mpeg">
-        </audio>
-
-        <div class="card">
-            <video playsinline width="100%" controls poster="images/Scout.png" style="border-radius: 8px;">
-                <source src="Video/SCOUT HIGH RES_25F.mp4" type="video/mp4">
-            </video>
-        </div>
-
-        <div class="centerImage">   
+        <div class="centerImage" style="margin-top: 20px;">   
             <button onclick="location.href='https://avertek.github.io/The-Charles-Scout/'" 
                 style="background-color: #b5aa33; border-radius: 8px; border: 1px solid white; height: 40px; color:#2f2f2e; font-family:'Factoria Bold'; padding: 0 20px; cursor: pointer; margin: 10px;">
                 <strong>TAKE SCOUT HOME WITH YOU</strong>
@@ -118,61 +128,18 @@
         <div class="card" style="text-align: center;">
             <h2><a href="https://thecharlesredmond.com/floor-plans/?utm_source=AVERtek&utm_medium=AR" onclick="getOutboundLink(this.href); return false;">ALL FLOOR PLANS</a></h2>
             <h2><a href="https://thecharlesredmond.com/amenities/?utm_source=AVERtek&utm_medium=AR" onclick="getOutboundLink(this.href); return false;">AMENITIES</a></h2>
-            <h2><a href="https://thecharlesredmond.com/gallery/?utm_source=AVERtek&utm_medium=AR" onclick="getOutboundLink(this.href); return false;">GALLERY</a></h2>
             <h2><a href="https://thecharlesredmond.securecafe.com/onlineleasing/the-charles1/guestlogin.aspx/?utm_source=AVERtek&utm_medium=AR" onclick="getOutboundLink(this.href); return false;">APPLY NOW</a></h2>
-            <h2><a href="mailto:leasing@thecharlesredmond.com?Subject=Requesting VIP Tour The Charles" onclick="getOutboundLink(this.href); return false;"><u>EMAIL US</u></a></h2>
             <h2 style="color:#cea155;"><a href="tel:8552771273">855-277-1273</a></h2>
-            <h2 style="color:#b5aa33;">8065 161st Ave NE, Redmond, WA 98052</h2>
         </div>
 
         <div class="card" style="text-align: center;">
-            <h2 style="color:#FFFFFF;">4D Augmented Reality on Mobile Device!</h2>
             <img class="marginauto" src="images/AR Instructions.png" style="max-width: 100%; height: auto; border-radius: 8px;"> 
-            <h2 style="color:#FFFFFF;">Share with Family & Friends!</h2>
-        </div>
-
-        <div class="card" style="text-align: center;">
-            <h4 style="color:#b5aa33;"><em>if AR button does not appear on mobile device, use another browser</em></h4>
-            <h3><a href="https://www.p11.com/contact/" onclick="getOutboundLink(this.href); return false;">Learn More About P11's AR Marketing.</a></h3>
         </div>
     </div>
 
     <script>
         const modelViewer = document.querySelector("#sync-model");
-        const audio = document.querySelector("#sound");
-        const overlay = document.querySelector("#overlay");
         const arLauncher = document.querySelector("#ar-launcher");
-
-        // Use WebXR-first approach for better scaling
-        arLauncher.addEventListener('click', () => {
-            // No source change needed here unless you have a dedicated AR-only file
-            // But we reinforce the scale attribute just in case
-            modelViewer.setAttribute('ar-scale', 'any');
-        });
-
-        modelViewer.addEventListener('ar-status', (event) => {
-            if (event.detail.status === 'not-presenting') {
-                setTimeout(() => {
-                    modelViewer.currentTime = audio.currentTime;
-                    if (!audio.paused) modelViewer.play();
-                }, 600);
-            }
-        });
-
-        function startExperience() {
-            overlay.classList.add("hide");
-            audio.play();
-            modelViewer.play();
-        }
-
-        audio.addEventListener("timeupdate", () => {
-            if (!isNaN(audio.currentTime)) {
-                modelViewer.currentTime = audio.currentTime;
-            }
-        });
-
-        audio.addEventListener("play", () => modelViewer.play());
-        audio.addEventListener("pause", () => modelViewer.pause());
 
         // Tracking helper
         var getOutboundLink = function(url) {
@@ -183,6 +150,11 @@
                 'event_callback': function(){ document.location = url; }
             });
         }
+
+        // Ensure scaling is permitted on launch
+        arLauncher.addEventListener('click', () => {
+            modelViewer.setAttribute('ar-scale', 'any');
+        });
     </script>
 </body>
 </html>
