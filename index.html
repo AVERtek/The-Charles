@@ -34,39 +34,51 @@
         .container { max-width: 800px; margin: 0 auto; }
         .card { background-color: #313e49; border: 2px solid #313e49; padding: 10px; margin-bottom: 1em; position: relative; }
         
-        /* Interactive Experience Wrapper */
-        .experience-wrapper { 
-            position: relative; 
-            width: 100%; 
-            background-color: #FFFFFF; 
-            border-radius: 8px; 
-            overflow: hidden;
-            margin-bottom: 1em;
+        /* Layout for AR Button above Video */
+        .experience-container {
+            width: 100%;
             display: flex;
             flex-direction: column;
+            gap: 10px; /* Space between button and video */
+            margin-bottom: 1em;
         }
 
-        /* Video is now responsive and interactive */
-        #video-overlay {
+        .ar-button-container {
             width: 100%;
-            height: auto; /* Responsive scaling for PC/Mobile */
-            z-index: 5;
-            display: block;
-            background: #000;
+            text-align: center;
         }
 
         .ar-button { 
             background-color: #b5aa33; border-radius: 8px; border: 1px solid white; 
-            position: absolute; top: 10px; right: 10px; height: 40px; 
-            color: #2F2F2E; padding: 0 15px; cursor: pointer; z-index: 10; 
+            height: auto; min-height: 40px; width: 90%; /* Scales with mobile width */
+            max-width: 400px;
+            color: #2F2F2E; padding: 10px 15px; cursor: pointer; 
             font-weight: bold; font-family: 'Factoria Bold', sans-serif;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-size: clamp(14px, 4vw, 18px); /* Fluid font size for mobile */
         }
 
-        /* Model Viewer sits behind, ready for AR launch */
-        model-viewer { 
-            width: 100%; height: 0; position: absolute; visibility: hidden; 
+        #video-overlay {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+            background: #000;
         }
+
+        /* Error Banner Styling */
+        #ar-error {
+            display: none;
+            background-color: #ff595a;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 10px;
+            font-family: 'Factoria Bold', sans-serif;
+            border: 1px solid white;
+        }
+
+        model-viewer { width: 0; height: 0; visibility: hidden; position: absolute; }
         
         .marginauto { margin: 10px auto; display: block; }
         .centerImage { text-align: center; display: block; }
@@ -82,14 +94,19 @@
         <div class="card">
             <img class="marginauto" src="images/The-Charles-Logo.png" alt="Logo" style="max-width: 300px"> 
             <h2 style="color:#cea155;">REDMOND LIFE FROM A NEW PERSPECTIVE</h2>
-            <h2 style="color:#cea155;">Studio, 1, 2, 3 Bedrooms & Town Home Options</h2>
             <h1 style="color:#b5aa33;">NOW LEASING!</h1>
         </div>
 
-        <div class="experience-wrapper">
-            <button class="ar-button" id="ar-launcher" onclick="launchAR()">
-                👆 <strong>WALK OUR 4D/AR FLOORPLAN</strong>
-            </button>
+        <div id="ar-error">
+            ⚠️ AR is not supported on this device. Please open this page on a mobile phone or tablet to walk the floorplan.
+        </div>
+
+        <div class="experience-container">
+            <div class="ar-button-container">
+                <button class="ar-button" id="ar-launcher">
+                    👆 <strong>WALK OUR 4D/AR FLOORPLAN</strong>
+                </button>
+            </div>
 
             <video id="video-overlay" playsinline controls poster="images/Scout.png">
                 <source src="Video/SCOUT HIGH RES_25F.mp4" type="video/mp4">
@@ -139,11 +156,25 @@
 
     <script>
         const modelViewer = document.querySelector("#sync-model");
+        const arButton = document.querySelector("#ar-launcher");
+        const arError = document.querySelector("#ar-error");
 
-        function launchAR() {
-            // This triggers the AR intent directly
-            modelViewer.activateAR();
-        }
+        arButton.addEventListener('click', () => {
+            // Check if device supports AR modes
+            if (modelViewer.canActivateAR) {
+                modelViewer.activateAR();
+            } else {
+                // Show error banner if PC or non-AR device
+                arError.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Track the failed attempt in GA4
+                gtag('event', 'ar_unsupported', {
+                    'event_category': 'AR',
+                    'event_label': 'The Charles PC User'
+                });
+            }
+        });
 
         var getOutboundLink = function(url) {
             gtag('event', 'click', {
