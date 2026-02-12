@@ -61,12 +61,9 @@
             display: none; background-color: #ff595a; color: white;
             padding: 15px; border-radius: 8px; text-align: center;
             margin-bottom: 15px; border: 1px solid white; cursor: pointer;
-            animation: fadeIn 0.3s ease;
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Hidden model-viewer strictly for AR launch */
+        /* Model viewer hidden to prevent 2D interference */
         model-viewer { width: 0; height: 0; visibility: hidden; position: absolute; }
         
         .marginauto { margin: 10px auto; display: block; }
@@ -107,12 +104,12 @@
                 src="Models/the_charles_floorplan_final_v12.glb" 
                 ios-src="Models/THE_CHARLES_FLOORPLAN_FINAL_v12C.usdz#allowsScaling=1"
                 ar 
-                ar-modes="webxr quick-look scene-viewer" 
+                ar-modes="scene-viewer webxr quick-look" 
                 ar-scale="any"
                 ar-placement="floor"
+                interaction-prompt="auto"
                 autoplay
                 camera-controls 
-                interaction-prompt="none"
                 exposure="1" 
                 shadow-intensity="1">
             </model-viewer>
@@ -156,7 +153,6 @@
         const arButton = document.querySelector("#ar-launcher");
         const arError = document.querySelector("#ar-error");
 
-        // Force Animation & Scaling Logic
         arButton.addEventListener('click', () => {
             if (modelViewer.canActivateAR) {
                 arError.style.display = 'none';
@@ -168,7 +164,6 @@
             }
         });
 
-        // Event listener to re-trigger play() when user places the object in AR
         modelViewer.addEventListener('ar-status', (event) => {
             if (event.detail.status === 'object-placed') {
                 modelViewer.play();
