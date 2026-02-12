@@ -34,38 +34,32 @@
         .container { max-width: 800px; margin: 0 auto; }
         .card { background-color: #313e49; border: 2px solid #313e49; padding: 10px; margin-bottom: 1em; position: relative; }
         
-        /* Layout for AR Button above Video */
         .experience-container {
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 10px; /* Space between button and video */
+            gap: 15px;
             margin-bottom: 1em;
         }
 
-        .ar-button-container {
-            width: 100%;
-            text-align: center;
-        }
+        .ar-button-container { width: 100%; text-align: center; }
 
         .ar-button { 
             background-color: #b5aa33; border-radius: 8px; border: 1px solid white; 
-            height: auto; min-height: 40px; width: 90%; /* Scales with mobile width */
-            max-width: 400px;
-            color: #2F2F2E; padding: 10px 15px; cursor: pointer; 
+            height: auto; min-height: 45px; width: 90%; max-width: 400px;
+            color: #2F2F2E; padding: 12px 15px; cursor: pointer; 
             font-weight: bold; font-family: 'Factoria Bold', sans-serif;
-            font-size: clamp(14px, 4vw, 18px); /* Fluid font size for mobile */
+            font-size: clamp(14px, 4vw, 18px);
+            transition: transform 0.1s ease;
         }
+        .ar-button:active { transform: scale(0.98); }
 
         #video-overlay {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            display: block;
-            background: #000;
+            width: 100%; height: auto; border-radius: 8px;
+            display: block; background: #000;
         }
 
-        /* Error Banner Styling */
+        /* Responsive Error Banner */
         #ar-error {
             display: none;
             background-color: #ff595a;
@@ -73,13 +67,19 @@
             padding: 15px;
             border-radius: 8px;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-family: 'Factoria Bold', sans-serif;
             border: 1px solid white;
+            cursor: pointer; /* Indicates it can be clicked to close */
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         model-viewer { width: 0; height: 0; visibility: hidden; position: absolute; }
-        
         .marginauto { margin: 10px auto; display: block; }
         .centerImage { text-align: center; display: block; }
         a { color: #cea155; text-decoration: none; }
@@ -97,8 +97,10 @@
             <h1 style="color:#b5aa33;">NOW LEASING!</h1>
         </div>
 
-        <div id="ar-error">
-            ⚠️ AR is not supported on this device. Please open this page on a mobile phone or tablet to walk the floorplan.
+        <div id="ar-error" onclick="toggleError(false)">
+            ⚠️ AR is not supported on this device. <br>
+            Please open this page on a mobile phone to walk the floorplan. <br>
+            <small>(Click to dismiss)</small>
         </div>
 
         <div class="experience-container">
@@ -145,7 +147,6 @@
         <div class="card">
             <h2 style="color:#FFFFFF;">4D Augmented Reality on Mobile Device!</h2>
             <img class="marginauto" src="images/AR Instructions.png" style="max-width: 100%; height: auto; max-height: 350px;"> 
-            <h2 style="color:#FFFFFF;">Share with Family & Friends!</h2>
         </div>
 
         <div class="card">
@@ -159,20 +160,23 @@
         const arButton = document.querySelector("#ar-launcher");
         const arError = document.querySelector("#ar-error");
 
+        function toggleError(show) {
+            arError.style.display = show ? 'block' : 'none';
+        }
+
         arButton.addEventListener('click', () => {
-            // Check if device supports AR modes
+            // Check if model-viewer thinks AR is possible
             if (modelViewer.canActivateAR) {
+                toggleError(false);
                 modelViewer.activateAR();
             } else {
-                // Show error banner if PC or non-AR device
-                arError.style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Toggle logic: If error is already showing, hide it. If not, show it.
+                const isShowing = arError.style.display === 'block';
+                toggleError(!isShowing);
                 
-                // Track the failed attempt in GA4
-                gtag('event', 'ar_unsupported', {
-                    'event_category': 'AR',
-                    'event_label': 'The Charles PC User'
-                });
+                if (!isShowing) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             }
         });
 
